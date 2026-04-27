@@ -29,7 +29,7 @@ public class DBTests {
         String password = "unomas";
 
         db.insertUser(username, password);
-        List<User> users = userDao.getAllUsersList();
+        List<User> users = db.getAllUsers();
         assertNotNull(users.get(0));
         assertEquals(username, users.get(0).getUsername());
 
