@@ -12,6 +12,7 @@ public class IDandPasswords {
 
     HashMap<String, String> loginInfo = new HashMap<String, String>();
 
+    IDandPasswords(){
 
         loginInfo.put("John", "password123");
         loginInfo.put("Tom", "SafePassword");

@@ -1,5 +1,5 @@
 package database;
-import main.User;
+import User;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,5 +1,3 @@
-package test;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -10,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Description:
  * @since 4/6/2026
  */
-public class FactoryTest {
+public class FactoryTests {
 
     @BeforeEach
     void setUp() {
