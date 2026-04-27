@@ -1,8 +1,13 @@
-package test;
-import database.DBManager;import main.User;import org.junit.jupiter.api.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
-import java.util.List;import static org.junit.jupiter.api.Assertions.*;
+import database.DBManager;
+import java.util.List;
+
+
 /**
  * @author Victoria Ha
  * @version 0.1.0
