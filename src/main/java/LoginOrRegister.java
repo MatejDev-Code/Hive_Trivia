@@ -11,13 +11,13 @@ import java.awt.event.ActionListener;
  */
 
 public class LoginOrRegister implements ActionListener {
-
     JFrame frame = new JFrame();
     JButton loginButton = new JButton("Login");
     JButton registerButton = new JButton("Register");
     JLabel loginText = new JLabel("Log into existing account?");
-    JLabel registerText = new JLabel("Create a new account?");
 
+    JLabel registerText = new JLabel("Create a new account?");
+    LoginOrRegister(){
 
         loginText.setBounds(90, 70, 500, 25);
         loginButton.setBounds(125, 100, 100, 25);
@@ -39,6 +39,8 @@ public class LoginOrRegister implements ActionListener {
         frame.setVisible(true);
 
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
