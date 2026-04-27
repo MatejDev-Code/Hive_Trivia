@@ -14,7 +14,6 @@ public class RegisterPage {
     JFrame frame = new JFrame();
     JLabel titleLabel = new JLabel("Welcome!");
 
-    RegisterPage (){
 
         titleLabel.setBounds(0, 0, 200, 35);
         titleLabel.setFont(new Font(null,Font.BOLD, 25));
