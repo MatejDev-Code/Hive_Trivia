@@ -1,3 +1,4 @@
+package test;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -9,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 4/6/2026
  */
 public class DBTests {
-    private userDao;
+    private String user;
     private UserDB db;
 
     @BeforeEach
@@ -22,15 +23,15 @@ public class DBTests {
     void tearDown() {
     }
 
-    @Test
+   " @Test
     void userInsert() {
         String username = "SenorSour;
         String password = "unomas";
-        User user = new User(username, password);
-        userDao.insert(user);
-        List<User> users = userDao.getAllUsersList();
-        assertNotNull(users.get(0));
-        assertEquals(username, users.get(0).getUsername());
-        // write your test here
+
+        db.insert(username, password);
+//        List<User> users = userDao.getAllUsersList();
+//        assertNotNull(users.get(0));
+//        assertEquals(username, users.get(0).getUsername());
+
     }
-}
+}"

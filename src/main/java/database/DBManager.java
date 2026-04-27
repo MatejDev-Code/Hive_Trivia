@@ -1,11 +1,14 @@
+package database;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Victoria Ha
  * @version 0.1.0
  * Description:
  * @since 4/26/2026
  */
-import java.sql.Connection;
-
 public  class DBManager {
     private static final String DB_URL_String = "Jdbc:SQLite:app.db";
     private Connection c;
@@ -22,9 +25,11 @@ public  class DBManager {
     }
     public void close(){
         try{
-            if (c!= null && !connect.isClosed()){
+            if (c!= null && !c.isClosed()){
                 c.close();
             }
+        } catch (SQLException e) {
+            System.err.println("closed failed: "+ e.getMessage());
         }
     }
     private void createTables(){
@@ -71,6 +76,31 @@ public  class DBManager {
         }catch(SQLException e){
             System.err.println("createTables Failded: "+ e.getMessage());
         }
+    }
+    public void insertUser(String uName, String pWord){
+        String SQL = "INSERT INTO Users(username, password) VALUES (?,?);";
+        try(PreparedStatement ps = c.prepareStatement(SQL)){
+            ps.setString(1,uName);
+            ps.setString(2,pWord);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<String> getAllUsers(){
+        List<String> users = new ArrayList<>();
+        String SQL = "SELECT * FROM Users;";
+
+        try(Statement s = c.createStatement();
+        ResultSet rs = s.executeQuery(SQL)) {
+            while (rs.next()) {
+                users.add(rs.getString("usernames"));
+            }
+        } catch (SQLException e) {
+            System.err.println("getAllUsers Failed: "+ e.getMessage());
+        }
+        return users;
     }
 
 }
