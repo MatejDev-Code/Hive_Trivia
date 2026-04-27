@@ -1,8 +1,8 @@
 package test;
-import org.junit.jupiter.api.Test;
+import database.DBManager;import main.User;import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Victoria Ha
  * @version 0.1.0
@@ -10,28 +10,28 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 4/6/2026
  */
 public class DBTests {
-    private String user;
-    private UserDB db;
+    private User juicydrop;
+    private DBManager db; //i dont know how the tests interact  with the dbmanager
+
 
     @BeforeEach
     void setUp() {
-        public void createDb(){
-        }
+        juicydrop = new User("SenorSour","unomas");
     }
 
     @AfterEach
     void tearDown() {
     }
 
-   " @Test
+   @Test
     void userInsert() {
-        String username = "SenorSour;
+        String username = "SenorSour";
         String password = "unomas";
 
-        db.insert(username, password);
-//        List<User> users = userDao.getAllUsersList();
-//        assertNotNull(users.get(0));
-//        assertEquals(username, users.get(0).getUsername());
+        db.insertUser(username, password);
+        List<User> users = userDao.getAllUsersList();
+        assertNotNull(users.get(0));
+        assertEquals(username, users.get(0).getUsername());
 
     }
-}"
+}

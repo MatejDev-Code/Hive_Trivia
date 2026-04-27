@@ -107,5 +107,27 @@ public  class DBManager {
         }
         return users;
     }
+    public void updateUsername(int id, String newUsername) {
+        String sql = "UPDATE Users SET Username = ? WHERE ID = ?";
+
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, newUsername);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("updateUsername failed: " + e.getMessage());
+        }
+    }
+
+    public void deleteUser(int id) {
+        String sql = "DELETE FROM Users WHERE user_id = ?";
+
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("deleteItem failed: " + e.getMessage());
+        }
+    }
 
 }
