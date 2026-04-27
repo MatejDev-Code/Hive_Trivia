@@ -10,11 +10,6 @@ class LoginPageTest {
     void setUp() {
     }
 
-    @AfterEach
-    void tearDown() {
-    }
-
     @Test
-    void actionPerformed() {
     }
 }

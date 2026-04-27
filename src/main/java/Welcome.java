@@ -14,7 +14,6 @@ public class Welcome {
     JFrame frame = new JFrame();
     JLabel welcomeLabel = new JLabel("Welcome!");
 
-    Welcome (String userID){
 
         welcomeLabel.setBounds(0, 0, 200, 35);
         welcomeLabel.setFont(new Font(null,Font.BOLD, 25));

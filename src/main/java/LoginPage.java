@@ -27,7 +27,6 @@ public class LoginPage implements ActionListener {
 
     HashMap<String, String> logging = new HashMap<String, String>();
 
-    LoginPage(HashMap<String, String> loginInfoOriginal) {
 
         logging = loginInfoOriginal;
 
