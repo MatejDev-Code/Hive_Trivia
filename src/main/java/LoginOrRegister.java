@@ -18,7 +18,7 @@ public class LoginOrRegister implements ActionListener {
     JLabel loginText = new JLabel("Log into existing account?");
     JLabel registerText = new JLabel("Create a new account?");
 
-    LoginOrRegister(){
+    public LoginOrRegister(){
 
         loginText.setBounds(90, 70, 500, 25);
         loginButton.setBounds(125, 100, 100, 25);

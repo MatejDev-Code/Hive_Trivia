@@ -19,6 +19,7 @@ public class LoginPage implements ActionListener {
     JButton resetButton = new JButton("Reset");
     JTextField userIDField = new JTextField();
     JPasswordField userPasswordField = new JPasswordField();
+    public boolean successfulLogin = false;
 
 
     JLabel userIDLabel = new JLabel("username:");
@@ -27,7 +28,7 @@ public class LoginPage implements ActionListener {
 
     HashMap<String, String> logging = new HashMap<String, String>();
 
-    LoginPage(HashMap<String, String> loginInfoOriginal) {
+    public LoginPage(HashMap<String, String> loginInfoOriginal) {
 
         logging = loginInfoOriginal;
 
@@ -81,6 +82,7 @@ public class LoginPage implements ActionListener {
                 if (logging.get(userID).equals(password)) {
                     messageLabel.setForeground(Color.blue);
                     messageLabel.setText("Login Successful");
+                    successfulLogin = true;
 
                     Welcome welcomeTemporary = new Welcome(userID);
                     frame.dispose();
