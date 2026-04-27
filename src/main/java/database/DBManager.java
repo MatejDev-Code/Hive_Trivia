@@ -1,4 +1,6 @@
 package database;
+import main.User;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,14 +90,17 @@ public  class DBManager {
         }
     }
 
-    public List<String> getAllUsers(){
-        List<String> users = new ArrayList<>();
+    public List<User> getAllUsers(){
+        List<User> users = new ArrayList<>();
         String SQL = "SELECT * FROM Users;";
 
         try(Statement s = c.createStatement();
         ResultSet rs = s.executeQuery(SQL)) {
             while (rs.next()) {
-                users.add(rs.getString("usernames"));
+                int id = rs.getInt("user_id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                users.add(new User(id, username, password));
             }
         } catch (SQLException e) {
             System.err.println("getAllUsers Failed: "+ e.getMessage());
