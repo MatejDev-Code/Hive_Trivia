@@ -43,14 +43,14 @@ bin/
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
-# User-specific stuff
+# database.User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
 
-# AWS User-specific
+# AWS database.User-specific
 .idea/**/aws.xml
 
 # Generated files
@@ -122,14 +122,14 @@ fabric.properties
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
-## User-specific stuff
+## database.User-specific stuff
 #.idea/**/workspace.xml
 #.idea/**/tasks.xml
 #.idea/**/usage.statistics.xml
 #.idea/**/dictionaries
 #.idea/**/shelf
 #
-## AWS User-specific
+## AWS database.User-specific
 #.idea/**/aws.xml
 #
 ## Generated files
@@ -236,14 +236,14 @@ gen
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
-# User-specific files
+# database.User-specific files
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
 
-# User-specific files (MonoDevelop/Xamarin Studio)
+# database.User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
 # Mono auto generated files
