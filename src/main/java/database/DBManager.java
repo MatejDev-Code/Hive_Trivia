@@ -1,6 +1,4 @@
 package database;
-import User;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,24 +9,24 @@ import java.util.List;
  * Description:
  * @since 4/26/2026
  */
-public  class DBManager {
-    private static final String DB_URL_String = "Jdbc:SQLite:app.db";
-    private Connection c;
+public class DBManager {
+    private static final String DB_URL_STRING = "jdbc:sqlite:app.db";
+    private Connection connection;
 
     public DBManager() {
         try {
-            c = DriverManager.getConnection(DB_URL_String);
+            connection = DriverManager.getConnection(DB_URL_STRING);
             System.out.println("Connected to database successfully");
             createTables();
 
         }catch(SQLException e ){
-            System.err.println("connection failed e.getMsg");
+            System.err.println("connection failed: " + e.getMessage());
         }
     }
     public void close(){
         try{
-            if (c!= null && !c.isClosed()){
-                c.close();
+            if (connection!= null && !connection.isClosed()){
+                connection.close();
             }
         } catch (SQLException e) {
             System.err.println("closed failed: "+ e.getMessage());
@@ -37,13 +35,13 @@ public  class DBManager {
     private void createTables(){
         String UsersSQL = """
         CREATE TABLE IF NOT EXISTS Users(
-            ID INT AUTO_INCREMENT PRIMARY KEY,
-            Username VARCHAR(20) NOT NULL,
-            Password VARCHAR(20) NOT NULL
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            username VARCHAR(20) NOT NULL,
+            password VARCHAR(20) NOT NULL
          );
         """;
         String CategoriesSQL = "Create Table if not exists Categories(\n" +
-                "ID serial primary key,\n" +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "categoryName varchar(20) not null unique\n" +
                 ");";
         String UserScoresSQL = "Create Table if not exists UserScores(\n" +
@@ -56,18 +54,18 @@ public  class DBManager {
                 ");";
         String QuestionsSQL = """
         CREATE TABLE IF NOT EXISTS Questions(
-            ID SERIAL PRIMARY KEY,
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
             question VARCHAR(200) NOT NULL,
             trueAns VARCHAR(50) NOT NULL,
             wrongAnsOne VARCHAR(50) NOT NULL,
             wrongAnsTwo VARCHAR(50),
             wrongAnsThr VARCHAR(50),
-            correct int default NULl,
+            correct int default NULL,
             category_id INT NOT NULL,
             FOREIGN KEY (category_id) REFERENCES Categories(ID) ON DELETE CASCADE
         );
         """;
-        try(Statement s = c.createStatement()){
+        try(Statement s = connection.createStatement()){
             s.execute("PRAGMA foreign_keys = ON;");//disclaimer from the author: no idea what this doies but if yt is to be trusted, it enables the use of foreign keys.
             s.execute(UsersSQL);
             s.execute(CategoriesSQL);
@@ -81,12 +79,12 @@ public  class DBManager {
     }
     public void insertUser(String uName, String pWord){
         String SQL = "INSERT INTO Users(username, password) VALUES (?,?);";
-        try(PreparedStatement ps = c.prepareStatement(SQL)){
+        try(PreparedStatement ps = connection.prepareStatement(SQL)){
             ps.setString(1,uName);
             ps.setString(2,pWord);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.err.println("insertUser Failed: "+ e.getMessage());
         }
     }
 
@@ -94,10 +92,10 @@ public  class DBManager {
         List<User> users = new ArrayList<>();
         String SQL = "SELECT * FROM Users;";
 
-        try(Statement s = c.createStatement();
+        try(Statement s = connection.createStatement();
         ResultSet rs = s.executeQuery(SQL)) {
             while (rs.next()) {
-                int id = rs.getInt("user_id");
+                int id = rs.getInt("ID");
                 String username = rs.getString("username");
                 String password = rs.getString("password");
                 users.add(new User(id, username, password));
@@ -108,9 +106,9 @@ public  class DBManager {
         return users;
     }
     public void updateUsername(int id, String newUsername) {
-        String sql = "UPDATE Users SET Username = ? WHERE ID = ?";
+        String sql = "UPDATE Users SET username = ? WHERE ID = ?";
 
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, newUsername);
             pstmt.setInt(2, id);
             pstmt.executeUpdate();
@@ -120,9 +118,9 @@ public  class DBManager {
     }
 
     public void deleteUser(int id) {
-        String sql = "DELETE FROM Users WHERE user_id = ?";
+        String sql = "DELETE FROM Users WHERE ID = ?";
 
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
