@@ -1,6 +1,5 @@
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import package.SceneType;
 /**
  * @author Victoria Ha
  * @version 0.1.0

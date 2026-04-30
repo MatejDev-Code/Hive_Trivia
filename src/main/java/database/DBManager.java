@@ -3,6 +3,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Question;
+import model.User;
+
 /**
  * @author Victoria Ha
  * @version 0.1.0
@@ -40,10 +43,12 @@ public class DBManager {
             password VARCHAR(20) NOT NULL
          );
         """;
-        String CategoriesSQL = "Create Table if not exists Categories(\n" +
-                "ID INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                "categoryName varchar(20) not null unique\n" +
-                ");";
+        String CategoriesSQL = """
+        CREATE TABLE IF NOT EXISTS Categories(
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            categoryName TEXT NOT NULL UNIQUE
+        );
+        """;
         String UserScoresSQL = "Create Table if not exists UserScores(\n" +
                 "user_id int not null,\n" +
                 "category_id int not null,\n" +
@@ -68,20 +73,23 @@ public class DBManager {
         try(Statement s = connection.createStatement()){
             s.execute("PRAGMA foreign_keys = ON;");//disclaimer from the author: no idea what this doies but if yt is to be trusted, it enables the use of foreign keys.
             s.execute(UsersSQL);
+            System.out.println("users created successfully");
             s.execute(CategoriesSQL);
+            System.out.println("Categories Executed successfully");
             s.execute(QuestionsSQL);
+            System.out.println("Questions created successfully");
             s.execute(UserScoresSQL);
-            System.out.println("Tables created successfully.");
+            System.out.println("UserScores created successfully.");
 
         }catch(SQLException e){
             System.err.println("createTables Failded: "+ e.getMessage());
         }
     }
-    public void insertUser(String uName, String pWord){
+    public void insertUser(User user){
         String SQL = "INSERT INTO Users(username, password) VALUES (?,?);";
         try(PreparedStatement ps = connection.prepareStatement(SQL)){
-            ps.setString(1,uName);
-            ps.setString(2,pWord);
+            ps.setString(1,user.getUsername());
+            ps.setString(2,user.getPassword());
             ps.executeUpdate();
         } catch (SQLException e) {
             System.err.println("insertUser Failed: "+ e.getMessage());
@@ -110,6 +118,17 @@ public class DBManager {
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, newUsername);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("updateUsername failed: " + e.getMessage());
+        }
+    }
+    public void updatePassword(int id, String newPass) {
+        String sql = "UPDATE Users SET password = ? WHERE ID = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, newPass);
             pstmt.setInt(2, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
