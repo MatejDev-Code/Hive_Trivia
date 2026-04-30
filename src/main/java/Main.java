@@ -4,9 +4,15 @@
  * Description:
  * @since 4/6/2026
  */
-
-import database.DBManager;
+import package.database.DBManager;
+import package.SceneFactory;
 public class Main {
-    private DBManager db;
+    private static DBManager db;
+    private static Stage stage;
+
+    public static void main(String[] args){
+        db = new DBManager();
+        stage.setScene(SceneFactory.create(SceneType.Main, stage, db))
+    }
 
 }
