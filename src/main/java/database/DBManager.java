@@ -95,6 +95,74 @@ public class DBManager {
             System.err.println("insertUser Failed: "+ e.getMessage());
         }
     }
+    public int getCategory(String categoryName) {
+        String selectSQL = "SELECT ID FROM Categories WHERE categoryName = ?";
+        String insertSQL = "INSERT OR IGNORE INTO Categories (categoryName) VALUES (?)";
+
+        try (
+                PreparedStatement selectStmt = connection.prepareStatement(selectSQL);
+                PreparedStatement insertStmt = connection.prepareStatement(insertSQL)
+        ) {
+            // 1. Try to find existing category
+            selectStmt.setString(1, categoryName);
+            ResultSet rs = selectStmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("ID");
+            }
+
+            // 2. Not found → try inserting (IGNORE avoids crash if duplicate)
+            insertStmt.setString(1, categoryName);
+            insertStmt.executeUpdate();
+
+            // 3. Re-select to get ID
+            ResultSet rs2 = selectStmt.executeQuery();
+            if (rs2.next()) {
+                return rs2.getInt("ID");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("getOrCreateCategory failed: " + e.getMessage());
+        }
+
+        return -1;
+    }
+    public void insertQuestion(Question q) {
+        String[] wrongAnswers = q.getWrongans();
+
+        if (wrongAnswers == null || wrongAnswers.length < 3) {
+            throw new IllegalArgumentException("Question must have 3 wrong answers.");
+        }
+
+        String findCategorySQL = "SELECT ID FROM Categories WHERE categoryName = ?";
+        String insertSQL = """
+        INSERT INTO Questions (question, trueAns, wrongAnsOne wrongAnsTwo, wrongAnsThr, correct, category_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?);
+        """;
+
+        try (PreparedStatement findStmt = connection.prepareStatement(findCategorySQL)) {
+            findStmt.setString(1, q.getCategory());
+
+            try (ResultSet rs = findStmt.executeQuery()) {
+                if (!rs.next()) {
+                    throw new SQLException("Category not found: " + q.getCategory());
+                }
+                int categoryId = rs.getInt("ID");
+                try (PreparedStatement insertStmt = connection.prepareStatement(insertSQL)) {
+                    insertStmt.setString(1, q.getQuestion());
+                    insertStmt.setString(2, q.getCorrectAns());
+                    insertStmt.setString(3, wrongAnswers[0]);
+                    insertStmt.setString(4, wrongAnswers[1]);
+                    insertStmt.setString(5, wrongAnswers[2]);
+                    insertStmt.setNull(6, java.sql.Types.INTEGER); // correct
+                    insertStmt.setInt(7, categoryId);
+                    insertStmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("insertQuestion failed: " + e.getMessage());
+        }
+    }
 
     public List<User> getAllUsers(){
         List<User> users = new ArrayList<>();
