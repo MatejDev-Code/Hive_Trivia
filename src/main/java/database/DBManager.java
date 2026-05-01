@@ -14,9 +14,10 @@ import model.User;
  */
 public class DBManager {
     private static final String DB_URL_STRING = "jdbc:sqlite:app.db";
+    private static DBManager instance;
     private Connection connection;
 
-    public DBManager() {
+    private DBManager() {
         try {
             connection = DriverManager.getConnection(DB_URL_STRING);
             System.out.println("Connected to database successfully");
@@ -26,14 +27,21 @@ public class DBManager {
             System.err.println("connection failed: " + e.getMessage());
         }
     }
+    public static DBManager getInstance() {
+        if (instance == null) {
+            instance = new DBManager();
+        }
+        return instance;}
     public void close(){
         try{
             if (connection!= null && !connection.isClosed()){
                 connection.close();
             }
+
         } catch (SQLException e) {
             System.err.println("closed failed: "+ e.getMessage());
         }
+        instance = null;
     }
     private void createTables(){
         String UsersSQL = """

@@ -13,7 +13,8 @@ public class Question {
     private String correctAns;
     private String[] wrongans = new String[3];
     private String category;
-//THERE IS NO CONSTRUCTOR YET.
+
+    //THERE IS NO CONSTRUCTOR YET.
     public String getQuestion() {
         return question;
     }
@@ -28,4 +29,5 @@ public class Question {
 
     public String getCategory() {
         return category;
+    }
 }
