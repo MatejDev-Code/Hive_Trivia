@@ -8,7 +8,7 @@ import javafx.scene.Scene;
  */
 public class SceneFactory {
 
-    public static void create(SceneType type, Stage stage){
+    public static Scene create(SceneType type, Stage stage){
         return switch (type) {
             case LOGIN -> buildLoginScene(stage);
             case MAIN -> buildMainScene(stage);
