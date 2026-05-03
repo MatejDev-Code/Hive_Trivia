@@ -1,7 +1,5 @@
-package JavaFX;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-import jdk.jshell.spi.ExecutionControl;
+import javafx.scene.Scene;
 /**
  * @author Victoria Ha
  * @version 0.1.0
@@ -10,7 +8,7 @@ import jdk.jshell.spi.ExecutionControl;
  */
 public class SceneFactory {
 
-    public static void create(SceneType type, Stage stage){
+    public static Scene create(SceneType type, Stage stage){
         return switch (type) {
             case LOGIN -> buildLoginScene(stage);
             case MAIN -> buildMainScene(stage);

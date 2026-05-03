@@ -1,5 +1,3 @@
-package JavaFX;
-
 /**
  * @author Victoria Ha
  * @version 0.1.0
