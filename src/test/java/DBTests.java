@@ -1,6 +1,7 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -22,10 +23,12 @@ public class DBTests {
     @BeforeEach
     void setUp() {
         juicydrop = new User("SenorSour","unomas");
+        db = DBManager.getInstance();
     }
 
     @AfterEach
     void tearDown() {
+        DBManager.close();
     }
 
    @Test
@@ -33,7 +36,7 @@ public class DBTests {
         String username = "SenorSour";
         String password = "unomas";
 
-        db.insertUser(username, password);
+        db.insertUser(juicydrop);
         List<User> users = db.getAllUsers();
         assertNotNull(users.get(0));
         assertEquals(username, users.get(0).getUsername());

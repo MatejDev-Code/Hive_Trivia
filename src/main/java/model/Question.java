@@ -23,7 +23,7 @@ public class Question {
         return correctAns;
     }
 
-    public String[] getWrongans() {
+    public String[] getWrongAns() {
         return wrongans;
     }
 

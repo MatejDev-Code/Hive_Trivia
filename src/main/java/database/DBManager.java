@@ -31,7 +31,9 @@ public class DBManager {
         if (instance == null) {
             instance = new DBManager();
         }
-        return instance;}
+        return instance;
+    }
+
     public void close(){
         try{
             if (connection!= null && !connection.isClosed()){
@@ -43,12 +45,13 @@ public class DBManager {
         }
         instance = null;
     }
+
     private void createTables(){
         String UsersSQL = """
         CREATE TABLE IF NOT EXISTS Users(
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            username VARCHAR(20) NOT NULL,
-            password VARCHAR(20) NOT NULL
+            username TEXT NOT NULL,
+            password TEXT NOT NULL
          );
         """;
         String CategoriesSQL = """
@@ -90,7 +93,7 @@ public class DBManager {
             System.out.println("UserScores created successfully.");
 
         }catch(SQLException e){
-            System.err.println("createTables Failded: "+ e.getMessage());
+            System.err.println("createTables Failed: "+ e.getMessage());
         }
     }
     public void insertUser(User user){
@@ -189,6 +192,7 @@ public class DBManager {
         }
         return users;
     }
+
     public void updateUsername(int id, String newUsername) {
         String sql = "UPDATE Users SET username = ? WHERE ID = ?";
 
