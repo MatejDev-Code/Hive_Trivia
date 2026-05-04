@@ -13,12 +13,12 @@ public class SceneFactory {
             case LOGIN -> buildLoginScene(stage);
             case MAIN -> buildMainScene(stage);
             case STATS -> buildStatsScene(stage);
-            case GAME -> buildGameScene(stage);
+            case GAME -> new GameController().buildScene();
         };
     }
     private static void buildMainScene(Stage stage){ return null;
     }
     private static void buildLoginScene(Stage stage){ return null;}
     private static void buildStatsScene(Stage stage){ return null;}
-    private static void buildGameScene(Stage stage){ return null;}
+
 }

@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class GameController {
-
     private Question question;
+    private int lives = 3;
 
     public GameController(Question question) {
         this.question = question;
@@ -68,6 +68,10 @@ public class GameController {
             System.out.println("Correct!");
         } else {
             System.out.println("Wrong!");
+            lives--;
+            if(lives == 0){
+                SceneManager.getInstance().navigateTo(SceneType.MAIN);
+            }
         }
 
         // optional: move to next question or back
