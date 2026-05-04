@@ -10,15 +10,15 @@ public class SceneFactory {
 
     public static Scene create(SceneType type, Stage stage){
         return switch (type) {
-            case LOGIN -> buildLoginScene(stage);
-            case MAIN -> buildMainScene(stage);
-            case STATS -> buildStatsScene(stage);
+            case LOGIN -> new LoginController().buildScene();
+            case MAIN -> new MainMenuController().buildScene();
+            case STATS -> new StatsController().buildScene();
             case GAME -> new GameController().buildScene();
         };
     }
-    private static void buildMainScene(Stage stage){ return null;
-    }
-    private static void buildLoginScene(Stage stage){ return null;}
-    private static void buildStatsScene(Stage stage){ return null;}
+//    private static void buildMainScene(Stage stage){ return null;
+//    }
+//    private static void buildLoginScene(Stage stage){ return null;}
+//    private static void buildStatsScene(Stage stage){ return null;}
 
 }

@@ -21,8 +21,8 @@ public class GameController {
     private Question question;
     private int lives = 3;
 
-    public GameController(Question question) {
-        this.question = question;
+    public GameController() {
+        this.question = new Question();
     }
 
     public Scene buildScene() {
@@ -59,7 +59,7 @@ public class GameController {
         int userId = DBManager.getUserInstance().getId();
         DBManager db = DBManager.getInstance();
         boolean isCorrect = selectedAnswer.equals(question.getCorrect());
-        db.insertQuestion( question);
+        db.insertQuestion(question);
         if (isCorrect) {
             int categoryId = db.getCategory(question.getCategory());
 
