@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Question {
     private String question;
     private String correctAns;
-    private String[] wrongans = new String[3];
+    private String[] wrongAns = new String[3];
     private String category;
 
     //THERE IS NO CONSTRUCTOR YET.
@@ -19,12 +19,12 @@ public class Question {
         return question;
     }
 
-    public String getCorrectAns() {
+    public String getCorrect() {
         return correctAns;
     }
 
-    public String[] getWrongAns() {
-        return wrongans;
+    public String[] getWrongs() {
+        return wrongAns;
     }
 
     public String getCategory() {
