@@ -18,15 +18,13 @@ public class SceneFactory {
 
     public static Scene create(SceneType type, Stage stage){
         return switch (type) {
-            case LOGIN -> buildLoginScene(stage);
-            case MAIN -> buildMainScene(stage);
+            case LOGIN -> new LoginController().buildScene();
+            case MAIN -> new MainMenuController().buildScene();
             case STATS -> buildStatsScene(stage);
-            case GAME -> buildGameScene(stage);
+            case GAME -> new GameController().buildScene();
         };
     }
-    private static void buildMainScene(Stage stage){ return null;
-    }
-    private static void buildLoginScene(Stage stage){ return null;}
+ 
     private static Scene buildStatsScene(Stage stage) {
         //TableView columns
         TableColumn<User, String> nameCol = new TableColumn<>("Player");
@@ -61,5 +59,4 @@ public class SceneFactory {
 
         return new Scene(layout, 600, 400);
     }
-    private static void buildGameScene(Stage stage){ return null;}
 }

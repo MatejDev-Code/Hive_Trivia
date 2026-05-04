@@ -8,18 +8,19 @@ import database.DBManager;
 import javafx.stage.Stage;
 
 public class Main {
-    private static DBManager db;
     private static Stage stage;
 
-    @Override
-    public void start(Stage stage){
+    public static void start(Stage stage){
         stage.setTitle("Hive Trivia");
         stage.setScene(SceneFactory.create(SceneType.MAIN, stage));
         stage.show();
     }
 
-    @Override
     public void stop(){
         DBManager.getInstance().close();
+    }
+    public static void main(String[] args){
+        stage = new Stage();
+        Main.start(stage);
     }
 }
