@@ -37,4 +37,9 @@ public class SceneManager {
         Scene scene = cache.computeIfAbsent(type, t -> SceneFactory.create(t, stage));
         stage.setScene(scene);
     }
+
+    public void navigateFresh(SceneType type){
+        Scene scene = SceneFactory.create(type, stage);
+        stage.setScene(scene);
+    }
 }

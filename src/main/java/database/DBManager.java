@@ -15,7 +15,8 @@ import model.User;
 public class DBManager {
     private static final String DB_URL_STRING = "jdbc:sqlite:app.db";
     private static DBManager instance;
-    private Connection connection;
+    private static User userInstance;
+    private static Connection connection;
 
     private DBManager() {
         try {
@@ -27,6 +28,14 @@ public class DBManager {
             System.err.println("connection failed: " + e.getMessage());
         }
     }
+    public static User getUserInstance(){
+        if (userInstance == null) {
+            System.out.println("no users logged in");
+            return null;
+        }else {
+            return userInstance;
+        }
+    }
     public static DBManager getInstance() {
         if (instance == null) {
             instance = new DBManager();
@@ -34,7 +43,7 @@ public class DBManager {
         return instance;
     }
 
-    public void close(){
+    public static void close(){
         try{
             if (connection!= null && !connection.isClosed()){
                 connection.close();
@@ -106,6 +115,16 @@ public class DBManager {
             System.err.println("insertUser Failed: "+ e.getMessage());
         }
     }
+    public void insertCategory(String categoryName) {
+        String sql = "INSERT OR IGNORE INTO Categories(categoryName) VALUES (?);";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, categoryName);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("insertCategory failed: " + e.getMessage());
+        }
+    }
     public int getCategory(String categoryName) {
         String selectSQL = "SELECT ID FROM Categories WHERE categoryName = ?";
         String insertSQL = "INSERT OR IGNORE INTO Categories (categoryName) VALUES (?)";
@@ -114,7 +133,7 @@ public class DBManager {
                 PreparedStatement selectStmt = connection.prepareStatement(selectSQL);
                 PreparedStatement insertStmt = connection.prepareStatement(insertSQL)
         ) {
-            // 1. Try to find existing category
+            // select for the category
             selectStmt.setString(1, categoryName);
             ResultSet rs = selectStmt.executeQuery();
 
@@ -122,11 +141,11 @@ public class DBManager {
                 return rs.getInt("ID");
             }
 
-            // 2. Not found → try inserting (IGNORE avoids crash if duplicate)
+            // dne, insert it
             insertStmt.setString(1, categoryName);
             insertStmt.executeUpdate();
 
-            // 3. Re-select to get ID
+            // select to return ir
             ResultSet rs2 = selectStmt.executeQuery();
             if (rs2.next()) {
                 return rs2.getInt("ID");
@@ -138,8 +157,24 @@ public class DBManager {
 
         return -1;
     }
+    public void addUserScore(int userId, int categoryId) {
+        String sql = """
+        INSERT INTO UserScores(user_id, category_id, score)
+        VALUES (?, ?, 5)
+        ON CONFLICT(user_id, category_id)
+        DO UPDATE SET score = score + 5;
+    """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, categoryId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("addUserScore failed: " + e.getMessage());
+        }
+    }
     public void insertQuestion(Question q) {
-        String[] wrongAnswers = q.getWrongans();
+        String[] wrongAnswers = q.getWrongs();
 
         if (wrongAnswers == null || wrongAnswers.length < 3) {
             throw new IllegalArgumentException("Question must have 3 wrong answers.");
@@ -147,7 +182,7 @@ public class DBManager {
 
         String findCategorySQL = "SELECT ID FROM Categories WHERE categoryName = ?";
         String insertSQL = """
-        INSERT INTO Questions (question, trueAns, wrongAnsOne wrongAnsTwo, wrongAnsThr, correct, category_id) 
+        INSERT INTO Questions (question, trueAns, wrongAnsOne, wrongAnsTwo, wrongAnsThr, correct, category_id) 
         VALUES (?, ?, ?, ?, ?, ?, ?);
         """;
 
@@ -161,7 +196,7 @@ public class DBManager {
                 int categoryId = rs.getInt("ID");
                 try (PreparedStatement insertStmt = connection.prepareStatement(insertSQL)) {
                     insertStmt.setString(1, q.getQuestion());
-                    insertStmt.setString(2, q.getCorrectAns());
+                    insertStmt.setString(2, q.getCorrect());
                     insertStmt.setString(3, wrongAnswers[0]);
                     insertStmt.setString(4, wrongAnswers[1]);
                     insertStmt.setString(5, wrongAnswers[2]);
@@ -193,27 +228,28 @@ public class DBManager {
         return users;
     }
 
-    public void updateUsername(int id, String newUsername) {
-        String sql = "UPDATE Users SET username = ? WHERE ID = ?";
+    public boolean login(String username, String password) {
+        String sql = "SELECT * FROM Users WHERE username = ? AND password = ?";
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, newUsername);
-            pstmt.setInt(2, id);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("updateUsername failed: " + e.getMessage());
-        }
-    }
-    public void updatePassword(int id, String newPass) {
-        String sql = "UPDATE Users SET password = ? WHERE ID = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, password);
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, newPass);
-            pstmt.setInt(2, id);
-            pstmt.executeUpdate();
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int id = rs.getInt("ID");
+                String user = rs.getString("username");
+                String pass = rs.getString("password");
+
+                userInstance = new User(id, user, pass);
+                return true;
+            }
         } catch (SQLException e) {
-            System.err.println("updateUsername failed: " + e.getMessage());
+            System.err.println("login failed: " + e.getMessage());
         }
+
+        return false;
     }
 
     public void deleteUser(int id) {
