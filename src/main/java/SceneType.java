@@ -6,7 +6,9 @@
  */
 public enum SceneType{
     MAIN,
+    LOGINORREGISTER,
     LOGIN,
     GAME,
-    STATS
+    STATS,
+    REGISTER
 }
