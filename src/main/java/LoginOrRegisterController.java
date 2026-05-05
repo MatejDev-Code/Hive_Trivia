@@ -1,6 +1,5 @@
 import javafx.geometry.Pos;import javafx.scene.Scene;
 
-import java.awt.*;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,9 +15,11 @@ import javafx.scene.layout.VBox;
 
 public class LoginOrRegisterController {
 
-    private final Scene scene;
+    public LoginOrRegisterController() {
 
-    LoginOrRegisterController(){
+    }
+
+    public Scene buildScene() {
 
         Button loginButton = new Button("Login");
         Button registerButton = new Button("Register");
@@ -40,9 +41,7 @@ public class LoginOrRegisterController {
                 loginText, loginButton, registerText, registerButton
         );
 
-        this.scene = new Scene(layout, 300, 400);
+        return new Scene(layout, 300, 400);
 
     }
-public Scene getScene() {
-        return scene;
-}}
+}
