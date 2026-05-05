@@ -1,8 +1,10 @@
 package database;
 import java.sql.*;
 import java.util.ArrayList;
+
 import java.util.List;
 
+import model.LeaderboardEntry;
 import model.Question;
 import model.User;
 
@@ -126,35 +128,24 @@ public class DBManager {
         }
     }
     public int getCategory(String categoryName) {
-        String selectSQL = "SELECT ID FROM Categories WHERE categoryName = ?";
-        String insertSQL = "INSERT OR IGNORE INTO Categories (categoryName) VALUES (?)";
+        String sql = "SELECT ID FROM Categories WHERE categoryName = ?";
 
-        try (
-                PreparedStatement selectStmt = connection.prepareStatement(selectSQL);
-                PreparedStatement insertStmt = connection.prepareStatement(insertSQL)
-        ) {
-            // select for the category
+        try (PreparedStatement selectStmt = connection.prepareStatement(sql)) {
             selectStmt.setString(1, categoryName);
             ResultSet rs = selectStmt.executeQuery();
-
             if (rs.next()) {
                 return rs.getInt("ID");
             }
+            insertCategory(categoryName);
 
-            // dne, insert it
-            insertStmt.setString(1, categoryName);
-            insertStmt.executeUpdate();
-
-            // select to return ir
-            ResultSet rs2 = selectStmt.executeQuery();
-            if (rs2.next()) {
-                return rs2.getInt("ID");
+            selectStmt.setString(1, categoryName); // (safe to reset)
+            rs = selectStmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("ID");
             }
-
         } catch (SQLException e) {
-            System.err.println("getOrCreateCategory failed: " + e.getMessage());
+            System.err.println("getCategory failed: " + e.getMessage());
         }
-
         return -1;
     }
     public void addUserScore(int userId, int categoryId) {
@@ -209,7 +200,7 @@ public class DBManager {
             System.err.println("insertQuestion failed: " + e.getMessage());
         }
     }
-
+// READ ---------------------------------------------------------------------------------------------------------
     public List<User> getAllUsers(){
         List<User> users = new ArrayList<>();
         String SQL = "SELECT * FROM Users;";
@@ -226,6 +217,29 @@ public class DBManager {
             System.err.println("getAllUsers Failed: "+ e.getMessage());
         }
         return users;
+    }
+    public List<LeaderboardEntry> getTopUsers(){
+        //I KNOW THIS METHOD UNNECESSARILY GETS PASSWORD BUT IM TOO LAZY TO SIMPLY WRITE AN ALTERNATIVE CONSTRUCTUOR
+        List<LeaderboardEntry> top5 = new ArrayList<>();
+        String sql = "Select sum(score) as total_score, users.username, users.id, users.password " +
+                "from userScores " +
+                "join users on users.id = userScores.user_id " +
+                "group by user_id " +
+                "order by total_score desc limit 5;";
+        try(Statement s = connection.createStatement();
+        ResultSet rs = s.executeQuery(sql)){
+            while (rs.next() && top5.size() < 5) {
+                int id = rs.getInt("id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                Integer score = new Integer(rs.getInt("total_score"));
+
+                top5.add(new LeaderboardEntry( top5.size()+1 , new User(id , username, password), score));
+            }
+        }catch (SQLException e){
+            System.err.println("getTopUsers failed: " + e.getMessage());
+        }
+        return top5;
     }
 
     public boolean login(String username, String password) {
