@@ -19,7 +19,7 @@ import javafx.scene.text.FontWeight;
  */
 public class MainMenuController {
 
-    private final DatabaseManager db = DatabaseManager.getInstance();
+//    private final DatabaseManager db = DatabaseManager.getInstance();
     /**
      * Builds and returns the Main Menu scene.
      * Creates all widgets, loads any needed data, connects buttons to handlers,

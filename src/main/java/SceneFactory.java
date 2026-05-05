@@ -1,13 +1,6 @@
-import database.DBManager;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.collections.ObservableList;
-import javafx.scene.manager.*;
-import javafx.scene.layout.VBox;
-import model.User;
+import java.util.HashMap;
 /**
  * @author Victoria Ha
  * @version 0.1.0
@@ -18,45 +11,28 @@ public class SceneFactory {
 
     public static Scene create(SceneType type, Stage stage){
         return switch (type) {
-            case LOGIN -> new LoginController().buildScene();
-            case MAIN -> new MainMenuController().buildScene();
+            case LOGINORREGISTER -> buildLoginOrRegiserScene(stage);
+            case LOGIN -> buildLoginScene(stage);
+            case REGISTER -> buildRegiserScene(stage);
+            case MAIN -> buildMainScene(stage);
             case STATS -> buildStatsScene(stage);
-            case GAME -> new GameController().buildScene();
+            case GAME -> buildGameScene(stage);
+            default -> throw new IllegalStateException("Unexpected value");
         };
     }
- 
-    private static Scene buildStatsScene(Stage stage) {
-        //TableView columns
-        TableColumn<User, String> nameCol = new TableColumn<>("Player");
-        nameCol.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getUsername()));
-
-        TableColumn<User, Integer> scoreCol = new TableColumn<>("Total Score");
-        scoreCol.setCellValueFactory(data ->
-                new SimpleIntegerProperty(data.getValue().getScore()).asObject());
-
-        TableView<User> table = new TableView<>();
-        table.getColumns().addAll(nameCol, scoreCol);
-
-        // --- Live data from DB ---
-        ObservableList<User> players = FXCollections.observableArrayList(
-                DBManager.getInstance().getTopPlayers()
-        );
-        table.setItems(players);
-
-        // --- Back button ---
-        Button backBtn = new Button("Back to Menu");
-        backBtn.setOnAction(e ->
-                SceneManager.getInstance().navigateTo(SceneType.MAIN));
-
-        Label title = new Label("Stats");
-
-        // --- Fixed VBox construction ---
-        VBox layout = new VBox();
-        layout.setSpacing(10);
-        layout.getChildren().addAll(title, table, backBtn);
-        layout.setStyle("-fx-padding: 20;");
-
-        return new Scene(layout, 600, 400);
+    private static Scene buildMainScene(Stage stage){ return null;}
+    private static Scene buildLoginOrRegiserScene(Stage stage){
+        return new LoginOrRegisterController().getScene();
     }
+    private static Scene buildLoginScene(Stage stage){
+        IDandPasswords iDandPasswords = new IDandPasswords();
+        HashMap<String, String> info = iDandPasswords.getLoginInfo();
+
+        return new LoginPageController(info).getScene();
+    }
+    private static Scene buildRegiserScene(Stage stage){
+        return new RegisterPageController(stage).getScene();
+    }
+    private static Scene buildStatsScene(Stage stage){ return null;}
+    private static Scene buildGameScene(Stage stage){ return null;}
 }
