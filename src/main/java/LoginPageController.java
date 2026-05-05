@@ -1,3 +1,4 @@
+import database.DBManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -22,8 +23,7 @@ import java.util.HashMap;
 
 public class LoginPageController {
 
-    private final Scene scene;
-    private final HashMap<String, String> loginInfo;
+    private Scene scene;
 
     private final TextField userNameField = new TextField();
     private final PasswordField userPasswordField = new PasswordField();
@@ -33,8 +33,8 @@ public class LoginPageController {
     private final Label passwordText = new Label("password: ");
 
 
-    public LoginPageController(HashMap<String, String> loginInfo) {
-        this.loginInfo = loginInfo;
+    public Scene buildScene() {
+        //this.loginInfo = loginInfo;
 
         GridPane g = new GridPane();
         g.setAlignment(Pos.CENTER);
@@ -55,6 +55,12 @@ public class LoginPageController {
         g.add(loginButton, 0, 2);
         g.add(resetButton, 1, 2);
 
+        Button backButton = new Button("Back");
+
+        backButton.setOnAction(e -> {
+            SceneManager.getInstance().navigateTo(SceneType.LOGINORREGISTER);
+        });
+        g.add(backButton, 2,2);
         messageLabel.setFont(Font.font(("Century"), FontPosture.ITALIC, 14));
         g.add(messageLabel, 0, 3, 3, 1);
 
@@ -63,14 +69,21 @@ public class LoginPageController {
             String username = userNameField.getText();
             String password = userPasswordField.getText();
 
-            if (loginInfo.containsKey(username) && loginInfo.get(username).equals(password)){
+            if(DBManager.getInstance().login(username, password)){
                 SceneManager.getInstance().navigateTo(SceneType.MAIN);
-            } else if (!loginInfo.containsKey(username)) {
+            }
+//            (loginInfo.containsKey(username) && loginInfo.get(username).equals(password)){
+//                SceneManager.getInstance().navigateTo(SceneType.MAIN);
+//            } else if (!loginInfo.containsKey(username)) {
+//                messageLabel.setTextFill(Color.RED);
+//                messageLabel.setText("username not found");
+//            } else if (!loginInfo.get(username).equals(password)){
+//                messageLabel.setTextFill(Color.RED);
+//                messageLabel.setText("incorrect password");
+//            }
+            else {
                 messageLabel.setTextFill(Color.RED);
-                messageLabel.setText("username not found");
-            } else if (!loginInfo.get(username).equals(password)){
-                messageLabel.setTextFill(Color.RED);
-                messageLabel.setText("incorrect password");
+                messageLabel.setText("invalid credentials");
             }
 
         });
@@ -82,7 +95,7 @@ public class LoginPageController {
             messageLabel.setText("");
         });
 
-        this.scene = new Scene(g, 500, 500);
+        return new Scene(g, 500, 500);
 
     }
 
