@@ -1,8 +1,10 @@
 package database;
 import java.sql.*;
 import java.util.ArrayList;
+
 import java.util.List;
 
+import model.LeaderboardEntry;
 import model.Question;
 import model.User;
 
@@ -226,6 +228,28 @@ public class DBManager {
             System.err.println("getAllUsers Failed: "+ e.getMessage());
         }
         return users;
+    }
+    public List<LeaderboardEntry> getTopUsers(){
+        List<LeaderboardEntry> top5 = new ArrayList<>();
+        String sql = "Select sum(score) as total_score, users.username, users.id, users.password " +
+                "from userScores " +
+                "join users on users.id = userScores.user_id g" +
+                "roup by user_id " +
+                "order by total_score desc limit 5;";
+        try(Statement s = connection.createStatement();
+        ResultSet rs = s.executeQuery(sql)){
+            while (rs.next() && top5.size() < 5) {
+                int id = rs.getInt("id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                Integer score = new Integer(rs.getInt("total_score"));
+
+                top5.add(new LeaderboardEntry( top5.size()+1 , new User(id , username, password), score));
+            }
+        }catch (SQLException e){
+            System.err.println("getTopUsers failed: " + e.getMessage());
+        }
+        return top5;
     }
 
     public boolean login(String username, String password) {
