@@ -1,3 +1,4 @@
+import database.DBManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,9 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
-
-
-
+import model.User;
 
 /**
  RegisterPage.java
@@ -25,14 +24,12 @@ import javafx.stage.Stage;
 
 public class RegisterPageController {
 
-    private final Scene scene;
-    private final Stage stage;
+    private Scene scene;
 
     private final TextField userNameField = new TextField();
     private final PasswordField userPasswordField = new PasswordField();
     private final PasswordField userConfirmField = new PasswordField();
     private final Label messageLabel = new Label("");
-
 
     private final Label passwordChar = new Label("❌ Contains at least 8 characters");
     private final Label passwordCase = new Label("❌ Contains both lower and uppercase letters");
@@ -40,10 +37,8 @@ public class RegisterPageController {
     private final Label passwordSpec = new Label("❌ Contains at least one special character (!@#$%^&) ");
     private final Label passwordMatch = new Label("❌ Both passwords must match ");
 
-
-    public RegisterPageController(Stage stage) {
-
-        this.stage = stage;
+    public RegisterPageController(){}
+    public Scene buildScene() {
 
         GridPane g = new GridPane();
         g.setHgap(10);
@@ -106,7 +101,8 @@ public class RegisterPageController {
 
         createButton.setOnAction(e -> {
             if (check()){
-                SceneManager.getInstance().navigateTo(SceneType.LOGINORREGISTER);
+                DBManager.getInstance().insertUser( new User( userNameField.getText(), userPasswordField.getText()));
+                SceneManager.getInstance().navigateTo(SceneType.LOGIN);
             } else {
                 messageLabel.setText("all requirements must be met");
                 messageLabel.setTextFill(Color.RED);
@@ -120,7 +116,7 @@ public class RegisterPageController {
         userConfirmField.setStyle("-fx-font: 8 px;");
 
         this.scene = new Scene(mainBox, 500, 600);
-
+        return scene;
     }
 
     private boolean check(){
@@ -205,10 +201,5 @@ public class RegisterPageController {
         return (hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && isLong && doesMatch);
 
     }
-
-    public Scene getScene() {
-        return scene;
-    }
-
 
 }
