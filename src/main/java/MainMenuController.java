@@ -1,3 +1,4 @@
+import database.DBManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,7 +20,7 @@ import javafx.scene.text.FontWeight;
  */
 public class MainMenuController {
 
-    private final DatabaseManager db = DatabaseManager.getInstance();
+    private final DBManager db = DBManager.getInstance();
     /**
      * Builds and returns the Main Menu scene.
      * Creates all widgets, loads any needed data, connects buttons to handlers,
