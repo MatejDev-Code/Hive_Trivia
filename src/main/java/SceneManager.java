@@ -1,9 +1,3 @@
-/**
- * @author Victoria Ha
- * @version 0.1.0
- * Description:
- * @since 5/1/2026
- */
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.util.EnumMap;
@@ -36,5 +30,14 @@ public class SceneManager {
     public void navigateTo(SceneType type) {
         Scene scene = cache.computeIfAbsent(type, t -> SceneFactory.create(t, stage));
         stage.setScene(scene);
+    }
+
+    public void clearCache(SceneType type) {
+        cache.remove(type);
+    }
+
+    public void navigateToFresh(SceneType type) {
+        clearCache(type);
+        navigateTo(type);
     }
 }
