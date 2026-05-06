@@ -76,14 +76,14 @@ public class MainMenuController {
     private void handleStart() {
         // TODO: Replace dialog with actual navigation to the Game screen
         showInfo("Loading Game Screen...");
-        SceneManager.getInstance().navigateTo(SceneType.GAME);
+        SceneManager.getInstance().navigateToFresh(SceneType.GAME);
     }
 
     /** Called when the STATS button is clicked. */
     private void handleStats() {
         // TODO: Replace dialog with actual navigation to the Stats screen
         showInfo("Opening Player Statistics...");
-        SceneManager.getInstance().navigateTo(SceneType.STATS);
+        SceneManager.getInstance().navigateToFresh(SceneType.STATS);
     }
 
     /** Called when the LOGOUT button is clicked. Confirms before exiting. */

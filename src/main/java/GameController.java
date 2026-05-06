@@ -1,9 +1,3 @@
-/**
- * @author Victoria Ha
- * @version 0.1.0
- * Description:
- * @since 5/3/2026
- */
 import database.DBManager;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -11,8 +5,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
-import model.PulledQuestion;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import model.Question;
 
 import java.util.ArrayList;
@@ -20,38 +16,33 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class GameController {
+public class GameController implements GameObserver {
+
+    private final gamerepo repo;
 
     private Question question;
-    private int lives = 3;
-    private Label questionLabel = new Label("");
-    private Button answerBtn1 = new Button();
-    private Button answerBtn2 = new Button();
-    private Button answerBtn3 = new Button();
-    private Button answerBtn4 = new Button();
+
+    private final Label questionLabel = new Label();
+    private final Label lifeCount = new Label();
+    private final Label scoreLabel = new Label();
+
+    private final Button answerBtn1 = new Button();
+    private final Button answerBtn2 = new Button();
+    private final Button answerBtn3 = new Button();
+    private final Button answerBtn4 = new Button();
 
     public GameController() {
-        loadQuestions();
-//        this.question = new Question();
+        repo = new gamerepo();
+        repo.addObserver(this);
     }
 
     public Scene buildScene() {
-
-        List<String> answers = new ArrayList<>();
-        answers.add(question.getCorrect());
-        answers.addAll(Arrays.asList(question.getWrongs()));
-
-        Collections.shuffle(answers);
-
-        answerBtn1 = new Button(answers.get(0));
-        answerBtn2 = new Button(answers.get(1));
-        answerBtn3 = new Button(answers.get(2));
-        answerBtn4 = new Button(answers.get(3));
         Button backButton = new Button("Back");
 
-        backButton.setOnAction(e -> {
-            SceneManager.getInstance().navigateTo(SceneType.MAIN);
-        });
+        backButton.setOnAction(e ->
+                SceneManager.getInstance().navigateTo(SceneType.MAIN)
+        );
+
         answerBtn1.setOnAction(e -> checkAnswer(answerBtn1.getText()));
         answerBtn2.setOnAction(e -> checkAnswer(answerBtn2.getText()));
         answerBtn3.setOnAction(e -> checkAnswer(answerBtn3.getText()));
@@ -59,78 +50,58 @@ public class GameController {
 
         HBox answerRow = new HBox(10, answerBtn1, answerBtn2, answerBtn3, answerBtn4);
 
-        Label lifeCount = new Label("Lives: "+lives);
-        Label score = new Label("Score: "+DBManager.getInstance().getScore(DBManager.getUserInstance()));
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
-        HBox ui = new HBox(100,backButton, score, lifeCount);
-        VBox root = new VBox(20, ui,questionLabel, spacer, answerRow);
+
+        HBox ui = new HBox(100, backButton, scoreLabel, lifeCount);
+        VBox root = new VBox(20, ui, questionLabel, spacer, answerRow);
         root.setPadding(new Insets(20));
+
+        refresh();
 
         return new Scene(root, 600, 450);
     }
 
-    public void loadQuestions(){
-        try{
-            PulledQuestion pulledQuestion = QuestionAPI.getSingleQuestion();
+    private void checkAnswer(String selectedAnswer) {
+        repo.checkAnswer(selectedAnswer);
 
-            if (pulledQuestion != null) {
-
-                this.question = new Question(pulledQuestion);
-                questionLabel.setText(question.getQuestion());
-
-                List<String> answers = new ArrayList<>();
-                answers.add(question.getCorrect());
-                answers.addAll(Arrays.asList(question.getWrongs()));
-
-                Collections.shuffle(answers);
-
-                answerBtn1.setText(answers.get(0));
-                answerBtn2.setText(answers.get(1));
-                answerBtn3.setText(answers.get(2));
-                answerBtn4.setText(answers.get(3));
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (repo.getLives() == 0) {
+            showInfo("GAME OVER \n Score: " + repo.getScore());
+            SceneManager.getInstance().navigateTo(SceneType.MAIN);
         }
     }
 
-    private boolean checkAnswer(String selectedAnswer) {
-        int userId = DBManager.getUserInstance().getId();
-        DBManager db = DBManager.getInstance();
-        boolean isCorrect = selectedAnswer.equals(question.getCorrect());
-        db.insertQuestion(question);
-        if (isCorrect) {
-            loadQuestions();
-            int categoryId = db.getCategory(question.getCategory());
+    private void refresh() {
+        onGameChanged(repo.getQuestion(), repo.getLives(), repo.getScore());
+    }
 
-            db.addUserScore(userId, categoryId);
+    @Override
+    public void onGameChanged(Question question, int lives, int score) {
+        this.question = question;
 
-            System.out.println("Correct!");
-        } else {
-            System.out.println("Wrong!");
-            lives--;
-
-            if (lives == 0) {
-                showInfo("GAME OVER \n Score: " + DBManager.getInstance().getScore(DBManager.getUserInstance()));
-                SceneManager.getInstance().navigateTo(SceneType.MAIN);
-                return false;
-            }
+        if (question == null) {
+            return;
         }
-// Load a new question
-        question = new Question();
-        SceneManager.getInstance().navigateTo(SceneType.GAME);
 
-        return isCorrect;
-    }
-    private void refresh(){
+        questionLabel.setText(question.getQuestion());
+        lifeCount.setText("Lives: " + lives);
+        scoreLabel.setText("Score: " + score);
 
+        List<String> answers = new ArrayList<>();
+        answers.add(question.getCorrect());
+        answers.addAll(Arrays.asList(question.getWrongs()));
+
+        Collections.shuffle(answers);
+
+        answerBtn1.setText(answers.get(0));
+        answerBtn2.setText(answers.get(1));
+        answerBtn3.setText(answers.get(2));
+        answerBtn4.setText(answers.get(3));
     }
+
     private void showInfo(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         alert.setHeaderText(null);
         alert.showAndWait();
     }
-
 }
