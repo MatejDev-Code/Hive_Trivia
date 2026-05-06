@@ -61,7 +61,7 @@ public class GameController {
         VBox root = new VBox(200, questionLabel, spacer, answerRow);
         root.setPadding(new Insets(20));
 
-        return new Scene(root, 600, 450);
+        return new Scene(root, 1000, 600);
     }
 
     public void loadQuestions(){
