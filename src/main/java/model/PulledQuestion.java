@@ -1,3 +1,5 @@
+package model;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record Question(
+public record PulledQuestion(
         @JsonProperty("category") String category,
         @JsonProperty("id") String id,
         @JsonProperty("question") QuestionText question,

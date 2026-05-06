@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Victoria Ha
@@ -14,7 +15,21 @@ public class Question {
     private String[] wrongAns = new String[3];
     private String category;
 
-    //THERE IS NO CONSTRUCTOR YET.
+    public Question(){}
+
+    public Question(PulledQuestion pulled){
+        if (pulled != null){
+            this.question = pulled.question().text();
+            this.correctAns = pulled.correctAnswer();
+            this.category = pulled.category();
+
+            List<String> incorrectList = pulled.incorrectAnswers();
+            for (int i = 0; i < 3 && i < incorrectList.size(); i++){
+                this.wrongAns[i] = incorrectList.get(i);
+            }
+        }
+    }
+
     public String getQuestion() {
         return question;
     }

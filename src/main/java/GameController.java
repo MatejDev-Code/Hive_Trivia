@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import model.PulledQuestion;
 import model.Question;
 
 import java.util.ArrayList;
@@ -18,15 +19,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class GameController {
+
     private Question question;
     private int lives = 3;
+    private Label questionLabel = new Label("");
 
     public GameController() {
-        this.question = new Question();
+        loadQuestions();
+//        this.question = new Question();
     }
 
     public Scene buildScene() {
-        Label questionLabel = new Label(question.getQuestion());
 
         List<String> answers = new ArrayList<>();
         answers.add(question.getCorrect());
@@ -55,12 +58,29 @@ public class GameController {
         return new Scene(root, 600, 450);
     }
 
+    public void loadQuestions(){
+        try{
+            PulledQuestion pulledQuestion = QuestionAPI.getSingleQuestion();
+
+            if (pulledQuestion != null) {
+
+                this.question = new Question(pulledQuestion);
+                questionLabel.setText(question.getQuestion());
+
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void checkAnswer(String selectedAnswer) {
         int userId = DBManager.getUserInstance().getId();
         DBManager db = DBManager.getInstance();
         boolean isCorrect = selectedAnswer.equals(question.getCorrect());
         db.insertQuestion(question);
         if (isCorrect) {
+            loadQuestions();
             int categoryId = db.getCategory(question.getCategory());
 
             db.addUserScore(userId, categoryId);
@@ -77,4 +97,5 @@ public class GameController {
         // optional: move to next question or back
         // SceneManager.getInstance().navigateTo(SceneType.MAIN);
     }
+
 }
