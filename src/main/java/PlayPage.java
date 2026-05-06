@@ -1,8 +1,7 @@
-import javax.swing.*;
+import model.PulledQuestion;import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,7 +17,7 @@ public class PlayPage implements ActionListener {
     JFrame frame = new JFrame();
     JLabel questionLabel = new JLabel();
 
-    List<Question> questionBatch;
+    List<PulledQuestion> questionBatch;
 
     public PlayPage() {
 

@@ -1,4 +1,4 @@
-import java.util.List;
+import model.PulledQuestion;import java.util.List;
 
 /**
  GrabQuestions.java
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class GrabQuestion {
 
-    private final Question q;
+    private final PulledQuestion q;
 
-    public GrabQuestion(Question q){
+    public GrabQuestion(PulledQuestion q){
         this.q = q;
     }
 

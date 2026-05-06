@@ -1,5 +1,7 @@
+package model;
+
 /**
- QuestionText.java
+ model.QuestionText.java
  * record for the question object
  @author Matteo Ristoski
  @version 0.1.0
