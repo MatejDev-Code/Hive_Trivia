@@ -4,13 +4,16 @@ import java.io.UncheckedIOException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;import model.PulledQuestion;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+
+import model.PulledQuestion;
+import model.QuestionText;
 
 /**
  QuestionAPI.java
@@ -25,10 +28,10 @@ public class QuestionAPI {
 
     private QuestionAPI() {}
 
-    public static final String QUESTIONS_API = "https://the-trivia-api.com/v2/questions?limit=5&types=text_choice";
+    public static final String QUESTIONS_API = "https://the-trivia-api.com/v2/questions?limit=1&types=text_choice";
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public static List<Question> toList(String inputStream) {
+    public static List<PulledQuestion> toList(String inputStream) {
         try {
             return OBJECT_MAPPER.readValue(inputStream, new TypeReference<>() {
             });
@@ -37,15 +40,25 @@ public class QuestionAPI {
         }
     }
 
-    public static Question toObject(InputStream inputStream) {
+    public static PulledQuestion getSingleQuestion() throws Exception {
+        List<PulledQuestion> list = getQuestions();
+
+        if (list.isEmpty()){
+            return null;
+        } else {
+            return list.getFirst();
+        }
+    }
+
+    public static PulledQuestion toObject(InputStream inputStream) {
         try {
-            return OBJECT_MAPPER.readValue(inputStream, Question.class);
+            return OBJECT_MAPPER.readValue(inputStream, PulledQuestion.class);
         } catch (IOException exc) {
             throw new UncheckedIOException(exc);
         }
     }
 
-    public static String toJson(Question question) {
+    public static String toJson(PulledQuestion question) {
         try {
             return OBJECT_MAPPER.writeValueAsString(question);
         } catch (JsonProcessingException exc) {
@@ -53,7 +66,7 @@ public class QuestionAPI {
         }
     }
 
-    public static List<Question> getQuestions() throws Exception {
+    public static List<PulledQuestion> getQuestions() throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(QUESTIONS_API))
