@@ -74,7 +74,6 @@ public class GameController {
                 questionLabel.setText(question.getQuestion());
 
             }
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
