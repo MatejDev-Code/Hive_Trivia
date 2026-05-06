@@ -82,7 +82,7 @@ public class GameController {
         }
     }
 
-    private void checkAnswer(String selectedAnswer) {
+    private boolean checkAnswer(String selectedAnswer) {
         int userId = DBManager.getUserInstance().getId();
         DBManager db = DBManager.getInstance();
         boolean isCorrect = selectedAnswer.equals(question.getCorrect());
@@ -94,16 +94,22 @@ public class GameController {
             db.addUserScore(userId, categoryId);
 
             System.out.println("Correct!");
-            return true;
         } else {
             System.out.println("Wrong!");
             lives--;
-            if(lives == 0){
-                showInfo("GAME OVER \n Score: "+DBManager.getInstance().getScore(DBManager.getUserInstance()));
+
+            if (lives == 0) {
+                showInfo("GAME OVER \n Score: " + DBManager.getInstance().getScore(DBManager.getUserInstance()));
                 SceneManager.getInstance().navigateTo(SceneType.MAIN);
+                return false;
             }
-            return false;
         }
+
+// Load a new question
+        question = new Question();
+        SceneManager.getInstance().navigateTo(SceneType.GAME);
+
+        return isCorrect;
 
     }
     private void showInfo(String message) {
