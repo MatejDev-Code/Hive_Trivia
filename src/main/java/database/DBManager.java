@@ -112,6 +112,7 @@ public class DBManager {
             ps.setString(1,user.getUsername());
             ps.setString(2,user.getPassword());
             ps.executeUpdate();
+            System.out.println(user.getUsername()+" has been added to the db!");
         } catch (SQLException e) {
             System.err.println("insertUser Failed: "+ e.getMessage());
         }
@@ -122,6 +123,7 @@ public class DBManager {
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, categoryName);
             ps.executeUpdate();
+            System.out.println(categoryName +" has been added to the db!");
         } catch (SQLException e) {
             System.err.println("insertCategory failed: " + e.getMessage());
         }
@@ -217,6 +219,21 @@ public class DBManager {
         }
         return users;
     }
+    public int getScore(User user) {
+        String sql = "Select Sum(score) as total_score from userScores where user_id = ?;";
+        int total_score = 0;
+        try(PreparedStatement ps = connection.prepareStatement(sql)){
+            ps.setString(1, user.getId()+"");
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                total_score = rs.getInt("total_score");
+            }
+        } catch (SQLException e) {
+            System.err.println("getScoreFailed: help. " +e.getMessage());
+        }
+        return total_score;
+    }
     public List<LeaderboardEntry> getTopUsers(){
         //I KNOW THIS METHOD UNNECESSARILY GETS PASSWORD BUT IM TOO LAZY TO SIMPLY WRITE AN ALTERNATIVE CONSTRUCTUOR
         List<LeaderboardEntry> top5 = new ArrayList<>();
@@ -275,5 +292,4 @@ public class DBManager {
             System.err.println("deleteItem failed: " + e.getMessage());
         }
     }
-
 }

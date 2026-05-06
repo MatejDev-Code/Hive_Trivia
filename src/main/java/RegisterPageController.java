@@ -91,6 +91,13 @@ public class RegisterPageController {
         userPasswordField.textProperty().addListener((obs, oldVal, newVal) -> check());
         userConfirmField.textProperty().addListener((obs, oldVal, newVal) -> check());
 
+        Button backButton = new Button("Back");
+
+        backButton.setOnAction(e -> {
+            SceneManager.getInstance().navigateTo(SceneType.LOGINORREGISTER);
+        });
+        buttonBox.add(backButton, 2,0);
+
         resetButton.setOnAction(e -> {
             userNameField.clear();
             userPasswordField.clear();

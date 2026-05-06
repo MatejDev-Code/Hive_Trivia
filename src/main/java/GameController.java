@@ -38,7 +38,11 @@ public class GameController {
         Button answerBtn2 = new Button(answers.get(1));
         Button answerBtn3 = new Button(answers.get(2));
         Button answerBtn4 = new Button(answers.get(3));
+        Button backButton = new Button("Back");
 
+        backButton.setOnAction(e -> {
+            SceneManager.getInstance().navigateTo(SceneType.MAIN);
+        });
         answerBtn1.setOnAction(e -> checkAnswer(answerBtn1.getText()));
         answerBtn2.setOnAction(e -> checkAnswer(answerBtn2.getText()));
         answerBtn3.setOnAction(e -> checkAnswer(answerBtn3.getText()));
@@ -46,10 +50,12 @@ public class GameController {
 
         HBox answerRow = new HBox(10, answerBtn1, answerBtn2, answerBtn3, answerBtn4);
 
+        Label lifeCount = new Label(lives+"");
+        Label score = new Label(""+DBManager.getInstance().getScore(DBManager.getUserInstance()));
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
-
-        VBox root = new VBox(20, questionLabel, spacer, answerRow);
+        HBox ui = new HBox( backButton, score, lifeCount);
+        VBox root = new VBox(200, questionLabel, spacer, answerRow);
         root.setPadding(new Insets(20));
 
         return new Scene(root, 600, 450);
