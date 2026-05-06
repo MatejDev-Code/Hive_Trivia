@@ -83,6 +83,7 @@ public class MainMenuController {
     private void handleStats() {
         // TODO: Replace dialog with actual navigation to the Stats screen
         showInfo("Opening Player Statistics...");
+        SceneManager.getInstance().navigateTo(SceneType.STATS);
     }
 
     /** Called when the LOGOUT button is clicked. Confirms before exiting. */
