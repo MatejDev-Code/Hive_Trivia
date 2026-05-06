@@ -85,8 +85,6 @@ public class GameController {
             return false;
         }
 
-        // optional: move to next question or back
-        // SceneManager.getInstance().navigateTo(SceneType.MAIN);
     }
     private void showInfo(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
