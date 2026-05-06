@@ -25,6 +25,10 @@ public class GameController {
     private Question question;
     private int lives = 3;
     private Label questionLabel = new Label("");
+    private Button answerBtn1 = new Button();
+    private Button answerBtn2 = new Button();
+    private Button answerBtn3 = new Button();
+    private Button answerBtn4 = new Button();
 
     public GameController() {
         loadQuestions();
@@ -39,10 +43,10 @@ public class GameController {
 
         Collections.shuffle(answers);
 
-        Button answerBtn1 = new Button(answers.get(0));
-        Button answerBtn2 = new Button(answers.get(1));
-        Button answerBtn3 = new Button(answers.get(2));
-        Button answerBtn4 = new Button(answers.get(3));
+        answerBtn1 = new Button(answers.get(0));
+        answerBtn2 = new Button(answers.get(1));
+        answerBtn3 = new Button(answers.get(2));
+        answerBtn4 = new Button(answers.get(3));
         Button backButton = new Button("Back");
 
         backButton.setOnAction(e -> {
@@ -75,6 +79,16 @@ public class GameController {
                 this.question = new Question(pulledQuestion);
                 questionLabel.setText(question.getQuestion());
 
+                List<String> answers = new ArrayList<>();
+                answers.add(question.getCorrect());
+                answers.addAll(Arrays.asList(question.getWrongs()));
+
+                Collections.shuffle(answers);
+
+                answerBtn1.setText(answers.get(0));
+                answerBtn2.setText(answers.get(1));
+                answerBtn3.setText(answers.get(2));
+                answerBtn4.setText(answers.get(3));
             }
 
         } catch (Exception e) {
@@ -94,16 +108,23 @@ public class GameController {
             db.addUserScore(userId, categoryId);
 
             System.out.println("Correct!");
-            return true;
         } else {
             System.out.println("Wrong!");
             lives--;
-            if(lives == 0){
-                showInfo("GAME OVER \n Score: "+DBManager.getInstance().getScore(DBManager.getUserInstance()));
+
+            if (lives == 0) {
+                showInfo("GAME OVER \n Score: " + DBManager.getInstance().getScore(DBManager.getUserInstance()));
                 SceneManager.getInstance().navigateTo(SceneType.MAIN);
+                return false;
             }
-            return false;
         }
+// Load a new question
+        question = new Question();
+        SceneManager.getInstance().navigateTo(SceneType.GAME);
+
+        return isCorrect;
+    }
+    private void refresh(){
 
     }
     private void showInfo(String message) {
