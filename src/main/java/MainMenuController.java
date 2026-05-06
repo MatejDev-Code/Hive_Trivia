@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import model.User;
 
 /**
  * Name: Ash Straws
@@ -19,7 +20,7 @@ import javafx.scene.text.FontWeight;
  * Version 2.0 — converted from Swing (MainMenuController.java)
  */
 public class MainMenuController {
-
+    private User user;
 //    private final DatabaseManager db = DatabaseManager.getInstance();
     /**
      * Builds and returns the Main Menu scene.
@@ -75,6 +76,7 @@ public class MainMenuController {
     private void handleStart() {
         // TODO: Replace dialog with actual navigation to the Game screen
         showInfo("Loading Game Screen...");
+        SceneManager.getInstance().navigateTo(SceneType.GAME);
     }
 
     /** Called when the STATS button is clicked. */
