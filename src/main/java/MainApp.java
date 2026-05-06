@@ -10,7 +10,7 @@ public class MainApp extends Application {
 
         stage.setTitle("Welcome To Hive Trivia!");
 
-        SceneManager.getInstance().navigateTo(SceneType.GAME);
+        SceneManager.getInstance().navigateTo(SceneType.LOGINORREGISTER);
 
         stage.show();
 

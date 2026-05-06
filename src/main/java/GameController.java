@@ -82,7 +82,7 @@ public class GameController {
         }
     }
 
-    private void checkAnswer(String selectedAnswer) {
+    private boolean checkAnswer(String selectedAnswer) {
         int userId = DBManager.getUserInstance().getId();
         DBManager db = DBManager.getInstance();
         boolean isCorrect = selectedAnswer.equals(question.getCorrect());
