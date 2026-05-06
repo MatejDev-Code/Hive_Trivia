@@ -7,7 +7,9 @@
 import database.DBManager;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import model.Question;
@@ -50,18 +52,18 @@ public class GameController {
 
         HBox answerRow = new HBox(10, answerBtn1, answerBtn2, answerBtn3, answerBtn4);
 
-        Label lifeCount = new Label(lives+"");
-        Label score = new Label(""+DBManager.getInstance().getScore(DBManager.getUserInstance()));
+        Label lifeCount = new Label("Lives: "+lives);
+        Label score = new Label("Score: "+DBManager.getInstance().getScore(DBManager.getUserInstance()));
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
-        HBox ui = new HBox( backButton, score, lifeCount);
-        VBox root = new VBox(200, questionLabel, spacer, answerRow);
+        HBox ui = new HBox(100,backButton, score, lifeCount);
+        VBox root = new VBox(20, ui,questionLabel, spacer, answerRow);
         root.setPadding(new Insets(20));
 
         return new Scene(root, 600, 450);
     }
 
-    private void checkAnswer(String selectedAnswer) {
+    private boolean checkAnswer(String selectedAnswer) {
         int userId = DBManager.getUserInstance().getId();
         DBManager db = DBManager.getInstance();
         boolean isCorrect = selectedAnswer.equals(question.getCorrect());
@@ -72,15 +74,23 @@ public class GameController {
             db.addUserScore(userId, categoryId);
 
             System.out.println("Correct!");
+            return true;
         } else {
             System.out.println("Wrong!");
             lives--;
             if(lives == 0){
+                showInfo("GAME OVER \n Score: "+DBManager.getInstance().getScore(DBManager.getUserInstance()));
                 SceneManager.getInstance().navigateTo(SceneType.MAIN);
             }
+            return false;
         }
 
         // optional: move to next question or back
         // SceneManager.getInstance().navigateTo(SceneType.MAIN);
+    }
+    private void showInfo(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setHeaderText(null);
+        alert.showAndWait();
     }
 }
